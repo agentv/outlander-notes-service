@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="softStore-list" doc:id="6efe98da-f14e-4205-9174-dfc106fbac32" >
+		<os:retrieve-all-keys doc:name="Retrieve all keys" doc:id="a9f5dc27-ce4b-4054-92dc-d6ff0bf8ec87" />
+	</flow>
+	<flow name="softStore-get" doc:id="15752e15-4ef6-401c-b6d8-6607447283e8" >
+		<os:retrieve doc:name="validKey" doc:id="d5921aa2-df29-41bc-9cf6-c2c1d26968f4" key="unfinished" doc:description="unfinished">
+			<os:default-value ><![CDATA[0]]></os:default-value>
+		</os:retrieve>
+	</flow>
+	<flow name="publishToSoftStore" doc:id="da63b314-e5be-4693-986b-c2f77e630794" >
+		<set-variable value='#[vars.oKey default ("object-" ++ (vars.objecttype default "generic") ++ now() as String {format: "-yyyyMMddhhmmss"})]' doc:name="validateKey" doc:id="c58222a9-2b21-4de8-8d3b-02419d13c256" variableName="validKey" />
+		<os:store doc:name="validKey: payload" doc:id="b6cdcc5a-4389-482f-a6c5-b1a1ed1c1d05" key="vars.validKey"/>
+	</flow>
+	<flow name="packageQuotation" doc:id="0e70298c-2cd1-4586-9346-2d2f86197ef8" >
+		<set-variable value='#["outlanders/quotes/" 
+++ "object-quotation-" 
+++ (vars.counter default 0) as String
+++ now() as String {format: "-yyyyMMddhhmmss"}]' doc:name="oKey" doc:id="421bb4f6-5329-497d-b39c-aa4cc6c52d6f" variableName="oKey"/>
+	</flow>
+	<flow name="publishToVault" doc:id="0abb2afc-dc79-4d15-8fde-8b7f0cc53dc4" >
+		<set-variable value='#[vars.oKey default ("object-" ++ (vars.objecttype default "generic") ++ now() as String {format: "-yyyyMMddhhmmss"})]' doc:name="validateKey" doc:id="4537d174-f668-4b60-9cd0-9d065dd7ac4f" variableName="validKey"/>
+		<s3:create-object doc:name="validKey : payload" doc:id="f4e59d7b-c40f-4347-8309-729e56ade15c" config-ref="object_vault_S3_Configuration" bucketName="panreality-object-vault" key='#[vars.validKey]'/>
+	</flow>
+</mule>

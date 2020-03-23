@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:s3="http://www.mulesoft.org/schema/mule/s3" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd">
+	<flow name="readMeFirst" doc:id="50a4cb24-29f8-4026-a4f2-9031aefa81d4" doc:description="Next:
+
+1) generate some mock data for testing program operations
+2) read data in to form project models
+3) explore alternative for persisting info in Object Store
+4) Factor out the use of database - replace with S3 storage ops
+5) Parameterize storage details and isolate to (internal) system layer
+">
+		<logger level="INFO" doc:name="main.h" doc:id="19886a4d-f59b-4357-a5ea-e8419eb424a6" message="nothing special here, except project notes" doc:description="See project notes inside this flow"/>
+	</flow>
+	<flow name="notesVaultLister" doc:id="59067b3e-1bd3-4a86-a69a-12f41dffd5a9" doc:description="This flow lists notes in the object storage vault">
+		<http:listener doc:name="GET /keys" doc:id="151e2cb4-92ff-41fd-960d-074a97ef9ca7" config-ref="outlander-note-service-httpListenerConfig" path="/keys"/>
+		<s3:list-objects doc:name="List objects" doc:id="627a5ed5-9699-4f59-9340-c28e49aef452" config-ref="object_vault_S3_Configuration" bucketName="panreality-object-vault" prefix="outlanders" doc:description="Returns the name and size of objects in this vault"/>
+		<ee:transform doc:name="to JSON" doc:id="fb584685-948b-42a8-bff7-149880c0d53e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+	"object-name": $.key,
+	"object-size": $.size,
+	"storage-class": $.storageClass
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="addStaticNote" doc:id="83c59b2a-ef6f-494a-9c5e-1362c7a497ae" >
+		<http:listener doc:name="GET /addnote" doc:id="e06aeffc-b4a8-4aab-a01e-4f38b538f7a5" config-ref="outlander-note-service-httpListenerConfig" path="/addnote"/>
+		<os:store doc:name="simple timestamped note" doc:id="d7d68bd9-86c8-4ebc-a04d-84259a908c79" key='#["simple-note-" ++ now() as String {format: "yyMMddhhmmss"}]'>
+			<os:value ><![CDATA[#["A simple note created for you at: " ++ now() as String {format: "hh:mm on MMM dd, yyyy"}]]]></os:value>
+		</os:store>
+		<set-payload value='#["added a note for you"]' doc:name="Set Payload" doc:id="26b55eed-b8d1-4ce1-a02c-d99f6fb9032b" />
+	</flow>
+	<flow name="addManyFlow" doc:id="13acfbfc-77d5-4457-af0e-a5745a8deeff" >
+		<http:listener doc:name="GET /addmany" doc:id="3ed8c202-b240-4834-8eaa-f1d3b70bc5eb" config-ref="outlander-note-service-httpListenerConfig" path="/addmany"/>
+		<set-variable value='#[%dw 2.0
+output application/json
+
+fun transform2Array (rawstring) = rawstring 
+	replace /([^\r][^\n])\r\n([^\r][^\n])/
+	with ($[1] ++ " " ++ $[2]) 
+	splitBy /\r\n\r\n/
+---
+transform2Array (readUrl("classpath://samples/quotes-mini.txt"))]' doc:name="lookuptable" doc:id="423d5d4b-d9a4-4a2c-84a6-95a50c5ab1ab" variableName="lookuptable" doc:description="This processor reads in a quotation file
+and splits it by newline, then stores it in 
+a variable as an array"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b885e4da-9b49-4d64-bf43-5149355800a8" doc:description="update this so that it splits the file up properly"/>
+	</flow>
+	<flow name="addSectorFlow" doc:id="5bc6c8f0-f6f1-43cb-b75d-9c469484aee4" >
+		<http:listener doc:name="GET /addsector" doc:id="c8eac64a-9465-4208-a749-d3dec8804cb7" config-ref="outlander-note-service-httpListenerConfig" path="/addsector"/>
+		<set-payload value='#[{
+    "xcoord": 200 + random() * 30,
+    "resource_cap": 36,
+    "energy_cap": 18,
+    "ycoord": 200 + random() * 30
+}]' doc:name="make random sector" doc:id="40a2e816-b1fc-4ac5-b849-44a604a0ad1b" />
+		<os:store doc:name="sector information" doc:id="57d3a31b-5b9f-4aa6-9200-71065b9c5ec9" key='#["sector-" ++ payload.xcoord ++ "-" ++ payload.ycoord ++ now() as String {format: "-yyyyMMddhhmmss"}]'>
+		</os:store>
+		<set-payload value='#["added a sector for you"]' doc:name="simple response" doc:id="87d99de3-10b9-4912-9575-12ccfa143186" />
+	</flow>
+	<flow name="formatQuotationsSandbox" doc:id="4814e1da-d507-4b07-928d-8b31d7980083" >
+		<ee:transform doc:name="convert extract" doc:id="a9512840-f86a-401d-a92e-ff3eb1bec574">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+// excerpt from quotes-mini.txt
+var trim_in = 'Do not worry about what anybody else is going to do. The best way to
+predict the future is to invent it.
+-- Alan Kay
+
+Premature optimization is the root of all evil (or at least most of it)
+in programming.
+-- Donald Knuth
+'
+---
+{
+	
+when: now() as String {format: "yyMMddmmss"} as Number,
+thence: now(),
+trimmer: trim_in replace /([^\n])\n([^\n])/ with ($[1] ++ " " ++ $[2]) splitBy /\n\n/
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="convert number" doc:id="89d71d16-a0a0-4d67-b7c8-5c5cc67d0911" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/dw
+---
+10 as String {format: "0000"}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

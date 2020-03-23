@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="8e844ff6-31a2-4dbf-8054-cc6960635f5e" file="vin-config.yaml" />
+	<s3:config name="object_vault_S3_Configuration" doc:name="Amazon S3 Configuration" doc:id="1334725f-b488-4c65-8d70-6a10d9eb0b10" >
+		<s3:basic-connection accessKey="AKIAIUKKOGXTZUVAKJJA" secretKey="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" region="US_WEST_2" />
+	</s3:config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="5cdd358f-46a8-44d0-bb6b-4dbcd80d9c08" >
+		<jms:active-mq-connection />
+	</jms:config>
+</mule>

@@ -1,0 +1,73 @@
+#%RAML 1.0
+title: Outlander Note Service
+version: 1.0
+
+types:
+  Outlander-Note: !include types/outlanderNote.raml
+
+/note:
+  description: a generic, top level note
+  get:
+    description: retrieve some set of notes
+    responses:
+      200:
+        body:
+          application/json:
+            type: Outlander-Note[]
+            examples:
+              output: !include examples/outlander-note-examples.raml
+  post:
+    description: add a note to the pool
+    body:
+      application/json:
+        type: Outlander-Note
+        examples:
+          output: !include examples/outlander-note-example.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              responsemessage: Note added to objectstore
+
+  /{ID}:
+    description: A single note, identified by ID
+    get:
+      description: retrieve a note identfied by ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: Outlander-Note
+              examples:
+                output: !include examples/outlander-note-example.raml
+    delete:
+      description: remove a note identfied by ID
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                responsemessage: Note successfully deleted from Object Store
+    put:
+      description: update a note identfied by ID
+      responses:
+        200:
+          description: successful update
+          body:
+            application/json:
+              example:
+                responsemessage: Note successfully updated in Object Store
+        201:
+          description: note added to object store
+          body:
+            application/json:
+              example:
+                responsemessage: Note successfully created in Object Store
+        204:
+          description: no content
+          body:
+            application/json:
+              example:
+                responsemessage: No content. Nothing added to Object Store
+                

@@ -1,0 +1,9 @@
+db:
+  host: "localhost"
+  port: "8889"
+  user: "Your_User_Name"
+  password: "Your_Password_Here"
+  
+aws:
+  key: "Valid_S3_Key"
+  secret: "Valid_S3_Secret"

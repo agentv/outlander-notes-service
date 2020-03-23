@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="flowQuotesToJMS" doc:id="aaaa4097-a0db-4182-875a-01447c59937d" >
+		<scheduler doc:name="Scheduler" doc:id="e4b60f62-ca8a-4422-9001-376a2fdb41a6" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="2000"/>
+			</scheduling-strategy>
+		</scheduler>
+		<jms:publish doc:name="Publish" doc:id="eeebc1f3-cace-4159-89fb-75d999d3a0c2" config-ref="JMS_Config" destination="quotesQ">
+			<jms:message >
+				<jms:body ><![CDATA[#["send the payload if you can do something interesting with it"]]]></jms:body>
+			</jms:message>
+		</jms:publish>
+	</flow>
+	<flow name="carveSourceQuotes" doc:id="8bef86aa-4717-4eff-a464-b5ac61741100" >
+		<ee:transform doc:name="Parse Variants" doc:id="1991a42d-8a30-4840-a5ad-93d64e413452" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var microList = 
+'Do not worry about what anybody else is going to do. The best way to
+predict the future is to invent it.
+-- Alan Kay
+
+Premature optimization is the root of all evil (or at least most of it)
+in programming.
+-- Donald Knuth
+
+Lisp has jokingly been called "the most intelligent way to misuse a
+computer". I think that description is a great compliment because it
+transmits the full flavor of liberation: it has assisted a number of our
+most gifted fellow humans in thinking previously impossible thoughts.
+-- Edsger Dijkstra, CACM, 15:10'
+
+// this function misses the Windows style line endings
+fun atomizeList (rawstring) = rawstring 
+	replace /([^\n])\n([^\n])/ 
+	with ($[1] ++ " " ++ $[2]) 
+	splitBy /\n\n/
+	
+// this eats internal line breaks, and splits into array of quotations
+fun consolidateAndSplit (rawstring) = rawstring 
+	replace /([^\r][^\n])\r\n([^\r][^\n])/ 
+	with ($[1] ++ " " ++ $[2]) 
+	splitBy /\r\n\r\n/
+---
+//vars.miniWordList splitBy(/\n\n/) // gives quotes with crud
+//microList replace /\n--/ with " --" splitBy(/\n\n/)  // quotes, but with internal line breaks
+//microList replace /([^\n])\n([^\n])/ with ($[1] ++ " " ++ $[2]) splitBy /\n\n/
+
+{
+	//parseEmbeddedSample: atomizeList(microList),
+	//parseTinyFile: consolidateAndSplit(readUrl("classpath://samples/quotes-mini.txt","text/plain")),
+	biggerList: consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")),
+	numberOfQuotes: sizeOf(consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")) as Array),
+	safety: 1
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ad848ee3-1695-46be-a6aa-4b38bd62ef1b" />
+	</flow>
+	<flow name="makeLotsaQuotes" doc:id="a213a157-fb28-452b-969f-373305b04b08" >
+		<http:listener doc:name="GET /lotsa" doc:id="2e85388f-98f6-421a-950c-8ddcfc23ca2d" config-ref="outlander-note-service-httpListenerConfig" path="/lotsa"/>
+		<ee:transform doc:name="Wordlist to Array" doc:id="e3554db5-7d40-4d0a-9283-80ece666280e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var wordlist = readUrl("classpath://samples/quotes.txt", "text/plain") as String
+
+// this eats internal line breaks, and splits into array of quotations
+fun consolidateAndSplit (rawstring) = rawstring 
+	replace /([^\r][^\n])\r\n([^\r][^\n])/ 
+	with ($[1] ++ " " ++ $[2]) 
+	splitBy /\r\n\r\n/
+
+---
+consolidateAndSplit(wordlist)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="Log and Store" doc:id="b0ed5ed9-f334-4c2d-94d6-1ddb8b40a185" >
+			<logger level="INFO" doc:name="Logger" doc:id="11b73501-5f28-42cd-8092-a3f8121319e7" message='#[output text/plain
+var seq = vars.counter default 999
+---
+"\nQuotation number: $seq"
+++ "\n" // ++ payload
+//++ "\n"]' />
+			<flow-ref doc:name="package Quotation" doc:id="3a010d4c-299f-4d56-922b-29ee472d57c6" name="packageQuotation"/>
+			<flow-ref doc:name="publishToVault" doc:id="1aa18409-0265-4549-88ea-2a7912a66fd2" name="publishToVault"/>
+			<logger level="INFO" doc:name="Logger" doc:id="b07d375d-b074-4f69-b2ff-cd3f44a34477" />
+		</foreach>
+	</flow>
+</mule>

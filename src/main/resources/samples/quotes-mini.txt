@@ -1,0 +1,159 @@
+Don't worry about what anybody else is going to do. The best way to
+predict the future is to invent it.
+-- Alan Kay
+
+Premature optimization is the root of all evil (or at least most of it)
+in programming.
+-- Donald Knuth
+
+Lisp has jokingly been called "the most intelligent way to misuse a
+computer". I think that description is a great compliment because it
+transmits the full flavor of liberation: it has assisted a number of our
+most gifted fellow humans in thinking previously impossible thoughts.
+-- Edsger Dijkstra, CACM, 15:10
+
+Keep away from people who try to belittle your ambitions. Small people
+always do that, but the really great make you feel that you, too, can
+become great.
+-- Mark Twain
+
+What Paul does, and does very well, is to take ideas and concepts that
+are beautiful in the abstract, and brings them down to a real world
+level. That's a rare talent to find in writing these days.
+-- Jeff "hemos" Bates, Director, OSDN; Co-evolver, Slashdot
+
+
+to lose your competitive edge. A flexible program demonstrates the
+difference between a good designer and someone who is just getting a
+piece of code out.
+-- Gary Kildall (inventor of CP/M, one of the first OS for the micro).
+
+[How friendly will this machine be?] Well, I don’t think it’s a matter
+of friendliness, because ultimately if the program is going to
+accomplish anything of value, it will probably be relatively complex.
+-- Gary Kildall (inventor of CP/M, one of the first OS for the micro).
+
+Some people suggest that machines would be friendlier if input could be
+in a natural language. But natural language is probably the worst kind
+of input because it can be quite ambiguous. The process of retrieving
+information from the computer would be so time-consuming that you would
+be better off spending that time getting the information directly from
+an expert.
+-- Gary Kildall (inventor of CP/M, one of the first OS for the micro).
+
+The only way of discovering the limits of the possible is to venture a
+little way past them into the impossible.
+-- Arthur C. Clarke
+
+Any sufficiently advanced technology is undistinguishable from magic.
+-- Arthur C. Clarke
+
+That is the inevitable human response. We’re reluctant to believe that
+great discoveries are in the air. We want to believe that great
+discoveries are in our heads—and to each party in the multiple the
+presence of the other party is invariably cause for suspicion.
+-- Malcolm Gladwell, Who says big ideas are rare? 
+
+Good ideas are out there for anyone with the wit and the will to find
+them.
+-- Malcolm Gladwell, Who says big ideas are rare?
+
+A person won't become proficient at something until he or she has done
+it many times. In other words., if you want someone to be really good at
+building a software system, he or she will have to have built 10 or more
+systems of that type.
+-- Philip Greenspun
+
+A person won't retain proficiency at a task unless he or she has at one
+time learned to perform that task very rapidly. Learning research
+demonstrates that the skills of people who become accurate but not fast
+deteriorate much sooner than the skills of people who become both
+accurate and fast.
+-- Philip Greenspun
+
+Training research shows that if you get speed now you can get quality
+later. But if you don't get speed you will never get quality in the long
+run.
+-- Philip Greenspun
+
+Beware of bugs in the above code; I have only proved it correct, not
+tried it.
+-- Donald Knuth
+
+Wear your best for your execution and stand dignified. Your last
+recourse against randomness is how you act — if you can’t control
+outcomes, you can control the elegance of your behaviour. You will
+always have the last word.
+-- Nassim Taleb
+
+The human brain starts working the moment you are born and never stops
+until you stand up to speak in public.
+-- Anonymous
+
+The trouble with the world is that the stupid are always cocksure and
+the intelligent are always filled with doubt.
+-- Bertrand Russell
+
+Simple, clear purpose and principles give rise to complex, intelligent
+behavior. Complex rules and regulations give rise to simple, stupid
+behavior.
+-- Dee Hock, Birth of the Chaordic Age
+
+C++ is like teenage sex: Everybody is talking about it all the time,
+only few are really doing it.
+-- unknown
+
+Functional programming is to algorithms as the ubiquitous little black
+dress is to women's fashion.
+-- Mark Tarver (of "The bipolar Lisp programmer" fame)
+
+Java and C++ make you think that the new ideas are like the old ones.
+Java is the most distressing thing to hit computing since MS-DOS.
+-- Alan Kay
+
+For complex systems, the compiler and development environment need to be
+in the same language that its supporting. It's the only way to grow
+code.
+-- Alan Kay
+
+Simple things should be simple. Complex things should be possible.
+-- Alan Kay
+
+I invented the term Object-Oriented, and I can tell you I did not have
+C++ in mind.
+-- Alan Kay
+
+All creativity is an extended form of a joke.
+-- Alan Kay
+
+If you don't fail at least 90 percent of the time, you're not aiming
+high enough.
+-- Alan Kay
+
+Revolutions come from standing on the shoulders of giants and facing in
+a better direction.
+-- Alan Kay
+
+Ce n’est que par les beaux sentiments qu’on parvient à la fortune !
+-- Charles Baudelaire, Conseils aux jeunes littérateurs.
+
+La haine est une liqueur précieuse, un poison plus cher que celui des
+Borgia, - car il est fait avec notre sang, notre santé, notre sommeil,
+et les deux tiers de notre amour! Il faut en être avare!
+-- Charles Baudelaire, Conseils aux jeunes littérateurs.
+
+L’art qui satisfait le besoin le plus impérieux sera toujours le plus
+honoré.
+-- Charles Baudelaire, Conseils aux jeunes littérateurs.
+
+If it looks like a duck, walks like a duck, and quacks like a duck, it's
+a duck.
+-- Official definition of "duck typing"
+
+In OO, it's the data that is the "important" thing: you define the class
+which contains member data, and only incidentally contains code for
+manipulating the object. In FP, it's the code that's important: you
+define a function which contains code for working with the data, and
+only incidentally define what the data is.
+-- almkgor, on reddit
+
