@@ -57,8 +57,8 @@ fun consolidateAndSplit (rawstring) = rawstring
 {
 	//parseEmbeddedSample: atomizeList(microList),
 	//parseTinyFile: consolidateAndSplit(readUrl("classpath://samples/quotes-mini.txt","text/plain")),
-	biggerList: consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")),
-	numberOfQuotes: sizeOf(consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")) as Array),
+	//biggerList: consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")),
+	//numberOfQuotes: sizeOf(consolidateAndSplit(readUrl("classpath://samples/quotes.txt","text/plain")) as Array),
 	safety: 1
 }
 ]]></ee:set-payload>
