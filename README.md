@@ -1,3 +1,5 @@
+#### This project is obsolete. Look for the current version the XSettlers repos.
+
 ## Outlanders Note Service
 
 This project is primarily a sandbox for development of resources,
